@@ -1,109 +1,56 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>LINE LIFF 打卡</title>
-  <script src="https://static.line-scdn.net/liff/2.22.2/liff.js"></script>
-  <style>
-    body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
-    #scanBtn { padding: 15px 30px; font-size: 18px; cursor: pointer; }
-    #status { margin-top: 20px; font-size: 16px; color: green; }
-    .error { color: red; }
-  </style>
+    <title>LINE LIFF QR Code Scanner</title>
+    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 </head>
 <body>
-  <h1>每日打卡</h1>
-  <button id="scanBtn">掃描 QR Code</button>
-  <div id="status"></div>
-
-  <script>
-    // 載入 LIFF SDK 後，初始化
-    window.onload = function() {
-      liff.init({
-        liffId: 'YOUR_LIFF_ID' // 將 YOUR_LIFF_ID 替換成你的 LIFF ID
-      })
-      .then(() => {
-        // LIFF 初始化成功，檢查是否已登入
-        if (!liff.isLoggedIn()) {
-          liff.login(); // 如果沒登入，導向登入頁面
-        } else {
-          document.getElementById('scanBtn').onclick = scanQRCode;
-          document.getElementById('status').innerText = 'LIFF 準備就緒！';
+    <button onclick="scanQRCode()">掃描 QR Code</button>
+    <script>
+        async function initializeLIFF() {
+            try {
+                await liff.init({ liffId: '2008054767-e2XRvkLr' }); // 替換為你的 LIFF ID
+                if (!liff.isLoggedIn()) {
+                    liff.login(); // 未登入則要求使用者登入
+                } else {
+                    const profile = await liff.getProfile(); // 取得使用者資料
+                    const userId = profile.userId; // 取得 LINE 使用者 ID
+                    console.log('User ID:', userId);
+                }
+            } catch (error) {
+                console.error('LIFF 初始化失敗:', error);
+            }
         }
-      })
-      .catch((err) => {
-        console.error('LIFF 初始化失敗', err);
-        document.getElementById('status').innerText = 'LIFF 初始化失敗。';
-        document.getElementById('status').classList.add('error');
-      });
-    };
 
-    function scanQRCode() {
-      if (!liff.isApiAvailable('scanCodeV2')) {
-        alert('此 LINE 版本不支援掃描功能。');
-        return;
-      }
-      
-      liff.scanCodeV2()
-      .then(result => {
-        if (result.value) {
-          const qrCodeContent = result.value;
-          document.getElementById('status').innerText = '掃描成功，正在打卡...';
-          console.log('掃描到的 QR Code 內容:', qrCodeContent);
+        async function scanQRCode() {
+            try {
+                if (!liff.isLoggedIn()) {
+                    liff.login();
+                    return;
+                }
+                const result = await liff.scanCodeV2(); // 掃描 QR Code
+                const qrContent = result.value; // 取得 QR Code 內容
+                console.log('QR Code 內容:', qrContent);
 
-          // 將 QR Code 內容和用戶資訊發送到後端
-          sendPunchInRequest(qrCodeContent);
-        } else {
-          document.getElementById('status').innerText = '掃描失敗或已取消。';
-          document.getElementById('status').classList.add('error');
+                const profile = await liff.getProfile();
+                const userId = profile.userId;
+
+                // 將使用者 ID 代入 Google 表單
+                fillGoogleForm(userId, qrContent);
+            } catch (error) {
+                console.error('QR Code 掃描失敗:', error);
+            }
         }
-      })
-      .catch(err => {
-        console.error('掃描失敗', err);
-        document.getElementById('status').innerText = '掃描失敗，請重試。';
-        document.getElementById('status').classList.add('error');
-      });
-    }
 
-    function sendPunchInRequest(qrCodeContent) {
-      // 獲取用戶資料
-      liff.getProfile()
-      .then(profile => {
-        const userId = profile.userId;
-        const userName = profile.displayName;
-        
-        // 傳送資料到後端
-        fetch('https://your-backend-server.com/punch-in', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ 
-            userId: userId,
-            qrCodeContent: qrCodeContent
-          })
-        })
-        .then(response => response.json())
-        .then(data => {
-          if (data.success) {
-            document.getElementById('status').innerText = `打卡成功！${userName}`;
-            liff.closeWindow(); // 打卡成功後關閉 LIFF 視窗
-          } else {
-            document.getElementById('status').innerText = `打卡失敗: ${data.message}`;
-            document.getElementById('status').classList.add('error');
-          }
-        })
-        .catch(error => {
-          console.error('打卡請求失敗:', error);
-          document.getElementById('status').innerText = '網路請求失敗，請檢查網路。';
-          document.getElementById('status').classList.add('error');
-        });
-      })
-      .catch(err => {
-        console.error('無法取得用戶資料', err);
-        document.getElementById('status').innerText = '無法取得用戶資料，請重試。';
-        document.getElementById('status').classList.add('error');
-      });
-    }
-  </script>
+        function fillGoogleForm(userId, qrContent) {
+            // Google 表單的預填連結
+            const formUrl = 'YOUR_GOOGLE_FORM_URL'; // 替換為你的 Google 表單預填連結
+            const prefilledUrl = `${formUrl}?entry.123456789=${encodeURIComponent(userId)}&entry.987654321=${encodeURIComponent(qrContent)}`;
+            window.location.href = prefilledUrl; // 跳轉到預填表單
+        }
+
+        // 初始化 LIFF
+        initializeLIFF();
+    </script>
 </body>
 </html>
