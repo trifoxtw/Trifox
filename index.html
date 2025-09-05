@@ -11,27 +11,45 @@
             text-align: center;
             padding: 20px;
         }
-        button {
+        .checkin-button {
             display: block;
-            margin: 10px auto;
-            padding: 10px 20px;
-            font-size: 16px;
+            margin: 15px auto;
+            padding: 20px 30px;
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 400px;
             cursor: pointer;
+            transition: transform 0.2s;
         }
+        .checkin-button:hover {
+            transform: scale(1.05);
+        }
+        #morning-on { background-color: #4CAF50; } /* 早診上班 - 綠色 */
+        #morning-off { background-color: #FF5722; } /* 早診下班 - 橙色 */
+        #noon-on { background-color: #2196F3; } /* 午診上班 - 藍色 */
+        #noon-off { background-color: #F44336; } /* 午診下班 - 紅色 */
+        #night-on { background-color: #9C27B0; } /* 晚診上班 - 紫色 */
+        #night-off { background-color: #FFC107; } /* 晚診下班 - 黃色 */
         #result {
             margin-top: 20px;
+            font-size: 18px;
             font-weight: bold;
+            color: #333;
         }
     </style>
 </head>
 <body>
     <h2>選擇班別進行打卡</h2>
-    <button onclick="checkIn('早診上班')">早診上班</button>
-    <button onclick="checkIn('早診下班')">早診下班</button>
-    <button onclick="checkIn('午診上班')">午診上班</button>
-    <button onclick="checkIn('午診下班')">午診下班</button>
-    <button onclick="checkIn('晚診上班')">晚診上班</button>
-    <button onclick="checkIn('晚診下班')">晚診下班</button>
+    <button id="morning-on" class="checkin-button" onclick="checkIn('早診上班')">早診上班</button>
+    <button id="morning-off" class="checkin-button" onclick="checkIn('早診下班')">早診下班</button>
+    <button id="noon-on" class="checkin-button" onclick="checkIn('午診上班')">午診上班</button>
+    <button id="noon-off" class="checkin-button" onclick="checkIn('午診下班')">午診下班</button>
+    <button id="night-on" class="checkin-button" onclick="checkIn('晚診上班')">晚診上班</button>
+    <button id="night-off" class="checkin-button" onclick="checkIn('晚診下班')">晚診下班</button>
     <div id="result"></div>
 
     <script>
@@ -93,5 +111,6 @@
     </script>
 </body>
 </html>
+
 
 
