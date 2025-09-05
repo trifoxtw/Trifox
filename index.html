@@ -94,7 +94,7 @@
 
                 // 顯示打卡結果
                 const currentTime = new Date().toLocaleString('zh-TW', { timeZone: 'Asia/Taipei' });
-                document.getElementById('result').innerText = `打卡成功！\n班別：${shift}\n時間：${currentTime}`;
+                document.getElementById('result').innerText = `打卡完成！如未顯示在本日打卡狀況，請確認是否掃描正確QR Code！\n班別：${shift}\n時間：${currentTime}`;
 
                 // 移除 iframe
                 setTimeout(() => {
@@ -111,6 +111,7 @@
     </script>
 </body>
 </html>
+
 
 
 
