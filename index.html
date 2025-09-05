@@ -65,8 +65,8 @@
                 console.log('QR Code 內容:', qrContent);
 
                 // Google 表單預填連結
-                const formUrl = 'https://docs.google.com/forms/d/e/1FAIpQLSfkXPk4mjvH78PNfsXduF8DPg3vf3fmgIfNJXtCR5aIZR69QQ/viewform';
-                const prefilledUrl = `${formUrl}?entry.1366094180=${encodeURIComponent(shift)}&entry.538125100=${encodeURIComponent(userId)}&entry.1841717274=${encodeURIComponent(qrContent)}`;
+                const formUrl = 'https://docs.google.com/forms/d/e/1FAIpQLSfkXPk4mjvH78PNfsXduF8DPg3vf3fmgIfNJXtCR5aIZR69QQ/formResponse';
+                const prefilledUrl = `${formUrl}?=usp=pp_url&entry.1366094180=${encodeURIComponent(shift)}&entry.538125100=${encodeURIComponent(userId)}&entry.1841717274=${encodeURIComponent(qrContent)}`;
 
                 // 自動提交表單（使用 iframe 隱藏提交過程）
                 const iframe = document.createElement('iframe');
@@ -93,3 +93,4 @@
     </script>
 </body>
 </html>
+
